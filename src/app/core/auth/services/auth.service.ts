@@ -17,7 +17,7 @@ export class AuthService {
     formData.append('email', value.email);
     formData.append('password', value.password);
     formData.append('confirmPassword', value.confirmPassword);
-    
+
     return this.http$.post<IResponse<string>>(environment.api + 'auth/sign-up', formData);
   }
 }
