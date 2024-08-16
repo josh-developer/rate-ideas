@@ -43,8 +43,18 @@ export class IdeaComponent implements OnChanges, OnInit {
   }
 
   vote(isUpvote: boolean): void {
-    this.ideasService.vote({ isUpvote, ideaId: this.idea!.id }).subscribe((data) => {
-      console.log(data);
+    this.ideasService.vote({ isUpvote, ideaId: this.idea!.id }).subscribe((response) => {
+      if (response.statusCode === 200) {
+        const newVote = response.data;
+        const existingVoteIndex = this.idea?.votes?.findIndex((vote) => vote.user?.id === this.currentUserId);
+
+        if (existingVoteIndex !== -1 && existingVoteIndex !== undefined) {
+          this.idea!.votes![existingVoteIndex] = newVote;
+        } else {
+          this.idea!.votes!.push(newVote);
+        }
+        this.calculateVotes();
+      }
     });
   }
 

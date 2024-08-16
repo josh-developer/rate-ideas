@@ -22,8 +22,12 @@ export class IdeasService {
   }
 
   vote(data: { isUpvote: boolean; ideaId: number }): Observable<IResponse<IVote>> {
-    return this.httpClient$.post<IResponse<IVote>>(environment.api + 'idea-votes/create', JSON.stringify(data), {
-      headers: this.headers,
-    });
+    return this.httpClient$.post<IResponse<IVote>>(
+      environment.api + 'idea-votes/toggle-idea-vote',
+      JSON.stringify(data),
+      {
+        headers: this.headers,
+      }
+    );
   }
 }
