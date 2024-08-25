@@ -1,24 +1,43 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTab, MatTabGroup } from '@angular/material/tabs';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { ModalDialogComponent } from '@core/components/modal-dialog/modal-dialog.component';
 import { NavbarComponent } from '@core/components/navbar/navbar.component';
-import { ICategory } from '@core/models/ICategory';
+import { IdeaComponent } from '@shared/components/idea/idea.component';
+import { AuthService } from '@core/auth/services/auth.service';
 import { IIdea } from '@core/models/IIdea';
 import { IdeasService } from '@core/services/ideas.service';
-import { IdeaComponent } from '@shared/components/idea/idea.component';
 
 @Component({
   standalone: true,
   selector: 'app-my-ideas',
-  imports: [MatTabsModule, NavbarComponent, MatButtonModule, IdeaComponent],
+
+  imports: [NavbarComponent, MatTabGroup, MatTab, MatButtonModule, IdeaComponent, MatToolbarModule, MatIconModule],
+
   templateUrl: './my-ideas.component.html',
   styles: ``,
 })
 export default class MyIdeasComponent implements OnInit {
   ideasService = inject(IdeasService);
 
+  authService = inject(AuthService);
+  ideasState = [true, false];
+
+
   ideas?: IIdea[] = [];
   categories: ICategory[] = [];
+
+  dialog = inject(MatDialog);
+  openModal() {
+    this.dialog.open(ModalDialogComponent, {
+      data: {
+        clickedPlace: 'myideas',
+      },
+    });
+  }
 
   ngOnInit(): void {
     this.ideasService.getIdeas().subscribe((res) => {
