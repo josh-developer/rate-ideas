@@ -15,7 +15,7 @@
   </div>
   <hr />
   @if (isUserDataLoading) {
-    <mat-spinner></mat-spinner>
+    <p class="m-2">Loading...</p>
   } @else {
     <form [formGroup]="formAddIdeas" class="w-full" (ngSubmit)="submit()">
       <label class="text-[#667085] text-sm font-medium" for="name">Name</label>
@@ -65,39 +65,6 @@
       @if (formAddIdeas.controls['email'].hasError('email')) {
         <mat-error class="mb-2 text-red-600 block">Email is not <strong>valid !</strong></mat-error>
       }
-      <div class="relative">
-        <label class="text-[#667085] text-sm font-medium" for="password">Password</label>
-        <input
-          formControlName="password"
-          #inp
-          class="w-full border rounded-md border-solid border-[#D0D5DD] py-3 px-4 outline-none mb-5"
-          id="password"
-          type="password"
-          placeholder="Password"
-        />
-        @if (formAddIdeas.controls['password'].hasError('required')) {
-          <mat-error class="mb-2 text-red-600 block">Password is <strong>required </strong></mat-error>
-        } @else if (formAddIdeas.controls['password'].hasError('minlength')) {
-          <mat-error class="mb-2 text-red-600 block"
-            >Minimum length should be <strong>6 </strong> characters !</mat-error
-          >
-        }
-        @if (inp.type === 'password') {
-          <img
-            class="w-5 absolute top-[33px] bottom-0 left-[314px]"
-            (click)="inp.type = 'text'"
-            src="images/closed.svg"
-            alt=""
-          />
-        } @else {
-          <img
-            class="w-5 absolute top-[33px] bottom-0 left-[314px]"
-            (click)="inp.type = 'password'"
-            src="images/eye.svg"
-            alt=""
-          />
-        }
-      </div>
       <hr />
       <div class="flex justify-between mt-5">
         <button
@@ -111,7 +78,7 @@
           type="submit"
           [disabled]="formAddIdeas.invalid"
         >
-          Storage
+          Save
         </button>
       </div>
     </form>

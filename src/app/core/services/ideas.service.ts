@@ -31,7 +31,6 @@ export class IdeasService {
     });
     const data = body as Idea;
 
-
     const formData = Object.entries(data).reduce((fd, [key, val]) => {
       fd.append(key, val);
       return fd;
@@ -40,12 +39,9 @@ export class IdeasService {
 
     return this.httpClient$.post(environment.api + 'ideas/create', formData, { headers: header });
   }
-  getUserIdeas(userId: number): Observable<IResponse<IIdea[]>> {
-    return this.httpClient$.get<IResponse<IIdea[]>>(environment.api + 'ideas/get-by-user-id/' + userId);
+  getIdeas(): Observable<IResponse<IIdea[]>> {
+    return this.httpClient$.get<IResponse<IIdea[]>>(environment.api + 'ideas/get');
   }
-  
-
-  
 
   vote(data: { isUpvote: boolean; ideaId: number }): Observable<IResponse<IVote>> {
     return this.httpClient$.post<IResponse<IVote>>(

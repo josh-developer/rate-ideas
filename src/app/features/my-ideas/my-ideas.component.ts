@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTab, MatTabGroup } from '@angular/material/tabs';
+import { MatTab, MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ModalDialogComponent } from '@core/components/modal-dialog/modal-dialog.component';
 import { NavbarComponent } from '@core/components/navbar/navbar.component';
@@ -10,6 +10,7 @@ import { IdeaComponent } from '@shared/components/idea/idea.component';
 import { AuthService } from '@core/auth/services/auth.service';
 import { IIdea } from '@core/models/IIdea';
 import { IdeasService } from '@core/services/ideas.service';
+import { ICategory } from '@core/models/ICategory';
 
 @Component({
   standalone: true,
@@ -26,23 +27,34 @@ export default class MyIdeasComponent implements OnInit {
   authService = inject(AuthService);
   ideasState = [true, false];
 
-
   ideas?: IIdea[] = [];
   categories: ICategory[] = [];
 
   dialog = inject(MatDialog);
+
   openModal() {
-    this.dialog.open(ModalDialogComponent, {
-      data: {
-        clickedPlace: 'myideas',
-      },
-    });
+    this.dialog
+      .open(ModalDialogComponent, {
+        data: {
+          clickedPlace: 'myideas',
+        },
+      })
+      .afterClosed()
+      .subscribe((data) => {
+        if (data.success) {
+          this.getMyIdeas();
+        }
+      });
   }
 
   ngOnInit(): void {
+    this.getMyIdeas();
+  }
+
+  getMyIdeas(): void {
     this.ideasService.getIdeas().subscribe((res) => {
       this.ideas = res.data;
-      this.categories = this.groupByCategory(this.ideas);
+      this.categories = this.groupByCategory(this.ideas!);
     });
   }
 

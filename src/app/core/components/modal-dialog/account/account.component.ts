@@ -34,7 +34,6 @@ export class AccountModalComponent implements OnInit {
     surname: new FormControl('', [Validators.required]),
     username: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required, Validators.minLength(6)]),
   });
 
   ngOnInit(): void {
@@ -46,7 +45,6 @@ export class AccountModalComponent implements OnInit {
         surname: res.data.lastName,
         username: res.data.userName,
         email: res.data.email,
-        password: '',
       });
     });
   }
