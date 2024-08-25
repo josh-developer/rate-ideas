@@ -16,7 +16,7 @@ import { IdeaComponent } from '@shared/components/idea/idea.component';
 })
 export default class MyIdeasComponent implements OnInit {
   ideasService = inject(IdeasService);
-  
+
   ideas?: IIdea[] = [];
   categories: ICategory[] = [];
 
@@ -29,8 +29,8 @@ export default class MyIdeasComponent implements OnInit {
 
   groupByCategory(ideas: IIdea[]): ICategory[] {
     const grouped = ideas.reduce((acc, idea) => {
-      const category = acc.find(c => c.id === idea.category.id);
-      
+      const category = acc.find((c) => c.id === idea.category.id);
+
       if (!category) {
         acc.push({ ...idea.category, ideas: [idea] });
       } else {
@@ -45,20 +45,19 @@ export default class MyIdeasComponent implements OnInit {
       name: 'All',
       description: 'All ideas',
       image: { id: 0, fileName: '', filePath: '' },
-      ideas: ideas
+      ideas: ideas,
     });
 
     return grouped;
   }
-  
+
   onTabSwitch($event: MatTabChangeEvent) {
     this.ideas = this.categories[$event.index].ideas;
   }
 
   handleDeleteIdea(ideaId: number): void {
-    this.ideasService.delete(ideaId).subscribe(res => {
-      if(res.data)
-        this.ideas = this.ideas?.filter(idea => idea.id !== ideaId);
+    this.ideasService.delete(ideaId).subscribe((res) => {
+      if (res.data) this.ideas = this.ideas?.filter((idea) => idea.id !== ideaId);
     });
   }
 }
