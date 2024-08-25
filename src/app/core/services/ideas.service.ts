@@ -31,6 +31,7 @@ export class IdeasService {
     });
     const data = body as Idea;
 
+
     const formData = Object.entries(data).reduce((fd, [key, val]) => {
       fd.append(key, val);
       return fd;
@@ -39,13 +40,24 @@ export class IdeasService {
 
     return this.httpClient$.post(environment.api + 'ideas/create', formData, { headers: header });
   }
-  getIdeas(userId: number): Observable<IResponse<IIdea[]>> {
+  getUserIdeas(userId: number): Observable<IResponse<IIdea[]>> {
     return this.httpClient$.get<IResponse<IIdea[]>>(environment.api + 'ideas/get-by-user-id/' + userId);
   }
+  
+
+  
 
   vote(data: { isUpvote: boolean; ideaId: number }): Observable<IResponse<IVote>> {
-    return this.httpClient$.post<IResponse<IVote>>(environment.api + 'idea-votes/create', JSON.stringify(data), {
-      headers: this.headers,
-    });
+    return this.httpClient$.post<IResponse<IVote>>(
+      environment.api + 'idea-votes/toggle-idea-vote',
+      JSON.stringify(data),
+      {
+        headers: this.headers,
+      }
+    );
+  }
+
+  delete(ideaId: number): Observable<IResponse<Boolean>> {
+    return this.httpClient$.delete<IResponse<Boolean>>(environment.api + 'ideas/delete/' + ideaId);
   }
 }
