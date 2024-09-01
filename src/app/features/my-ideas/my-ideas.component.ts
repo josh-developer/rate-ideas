@@ -4,13 +4,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTab, MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ModalDialogComponent } from '@core/components/modal-dialog/modal-dialog.component';
 import { NavbarComponent } from '@core/components/navbar/navbar.component';
 import { IdeaComponent } from '@shared/components/idea/idea.component';
 import { AuthService } from '@core/auth/services/auth.service';
 import { IIdea } from '@core/models/IIdea';
 import { IdeasService } from '@core/services/ideas.service';
 import { ICategory } from '@core/models/ICategory';
+import { ModalIdeasComponent } from '@core/components/modal-dialog/modal-ideas/modal-ideas.component';
 
 @Component({
   standalone: true,
@@ -34,11 +34,7 @@ export default class MyIdeasComponent implements OnInit {
 
   openModal() {
     this.dialog
-      .open(ModalDialogComponent, {
-        data: {
-          clickedPlace: 'myideas',
-        },
-      })
+      .open(ModalIdeasComponent, { data: { ideas: false }})
       .afterClosed()
       .subscribe((data) => {
         if (data.success) {

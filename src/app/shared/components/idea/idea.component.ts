@@ -7,6 +7,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { IIdea } from '@core/models/IIdea';
 import { IVote } from '@core/models/IVote';
 import { IdeasService } from '@core/services/ideas.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ModalIdeasComponent } from '@core/components/modal-dialog/modal-ideas/modal-ideas.component';
 
 @Component({
   selector: 'app-idea',
@@ -18,6 +20,7 @@ import { IdeasService } from '@core/services/ideas.service';
 export class IdeaComponent implements OnChanges, OnInit {
   authService = inject(AuthService);
   ideasService = inject(IdeasService);
+  dialog = inject(MatDialog)
 
   @Input() idea?: IIdea;
   @Input() index!: number;
@@ -77,5 +80,9 @@ export class IdeaComponent implements OnChanges, OnInit {
       up: 0,
       down: 0,
     });
+  }
+
+  editIdea(){
+    this.dialog.open(ModalIdeasComponent, { data: { clickedPlace: 'myideas', idea: this.idea } })
   }
 }
