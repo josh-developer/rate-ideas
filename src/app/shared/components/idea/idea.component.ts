@@ -20,7 +20,7 @@ import { ModalIdeasComponent } from '@core/components/modal-dialog/modal-ideas/m
 export class IdeaComponent implements OnChanges, OnInit {
   authService = inject(AuthService);
   ideasService = inject(IdeasService);
-  dialog = inject(MatDialog)
+  dialog = inject(MatDialog);
 
   @Input() idea?: IIdea;
   @Input() index!: number;
@@ -82,7 +82,14 @@ export class IdeaComponent implements OnChanges, OnInit {
     });
   }
 
-  editIdea(){
-    this.dialog.open(ModalIdeasComponent, { data: { clickedPlace: 'myideas', idea: this.idea } })
+  editIdea(): void {
+    this.dialog.open(ModalIdeasComponent, { data: { clickedPlace: 'myideas', idea: this.idea } });
+  }
+
+  saveIdea(): void {
+    this.ideasService.saveIdea({ ideaId: this.idea!.id, isSaved: !this.idea!.isSaved }).subscribe((res) => {
+      this.idea!.isSaved = true;
+      console.log(res);
+    });
   }
 }

@@ -9,7 +9,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { IUser } from '@core/models/IUserResponse';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
-import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
+import { MAT_DATE_LOCALE, MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { HttpStatusCode } from '@angular/common/http';
 
 @Component({
@@ -27,7 +27,7 @@ import { HttpStatusCode } from '@angular/common/http';
     MatDatepickerModule,
     MatNativeDateModule,
   ],
-  providers: [provideNativeDateAdapter(), DatePipe],
+  providers: [provideNativeDateAdapter(), DatePipe, { provide: MAT_DATE_LOCALE, useValue: 'fr' }],
   templateUrl: './account.component.html',
 })
 export class AccountModalComponent implements OnInit {
@@ -58,17 +58,16 @@ export class AccountModalComponent implements OnInit {
     this.formUpdateUserInfo.controls['dateOfBirth'].setValue(formattedDate);
 
     const isChanged = Object.keys(this.formUpdateUserInfo.controls).some(
-      item => this.formUpdateUserInfo.value[item] !== (this.user as any)[item]
+      (item) => this.formUpdateUserInfo.value[item] !== (this.user as any)[item]
     );
-  
+
     if (isChanged) {
-      this.usersService.updateUser(this.formUpdateUserInfo).subscribe(res => {
+      this.usersService.updateUser(this.formUpdateUserInfo).subscribe((res) => {
         if (res.statusCode === HttpStatusCode.Ok) {
-          Object.keys(this.formUpdateUserInfo.controls).forEach((item)  => {
-            if (this.user) 
-              (this.user as any)[item] = this.formUpdateUserInfo.value[item]
+          Object.keys(this.formUpdateUserInfo.controls).forEach((item) => {
+            if (this.user) (this.user as any)[item] = this.formUpdateUserInfo.value[item];
           });
-  
+
           localStorage.setItem('user', JSON.stringify(this.user));
         }
       });

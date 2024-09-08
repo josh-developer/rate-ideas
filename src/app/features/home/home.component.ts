@@ -25,22 +25,38 @@ export default class HomeComponent implements OnInit {
   categories: ICategory[] = [];
 
   ngOnInit(): void {
-    this.categoriesService
-      .getAllCategories()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((categories) => {
-        const allIdeas = categories.data.reduce((acc, category) => {
-          return [...acc, ...category.ideas];
-        }, [] as IIdea[]);
+    this.getIdeas();
+  }
 
-        const categoryAll: any = {
-          ideas: allIdeas,
-          name: 'All',
-          id: 1000000,
-        };
-        this.categories = [categoryAll, ...categories.data.filter((c) => c.ideas.length > 0)];
-        this.ideas = this.categories[0].ideas;
-      });
+  getIdeas(): void {
+    this.ideasService.getAllIdeas().subscribe((res) => {
+      this.ideas = res.data;
+      this.categories = this.groupByCategory(this.ideas!);
+    });
+  }
+
+  groupByCategory(ideas: IIdea[]): ICategory[] {
+    const grouped = ideas.reduce((acc, idea) => {
+      const category = acc.find((c) => c.id === idea.category.id);
+
+      if (!category) {
+        acc.push({ ...idea.category, ideas: [idea] });
+      } else {
+        category.ideas.push(idea);
+      }
+
+      return acc;
+    }, [] as ICategory[]);
+
+    grouped.unshift({
+      id: 1000000,
+      name: 'All',
+      description: 'All ideas',
+      image: { id: 0, fileName: '', filePath: '' },
+      ideas: ideas,
+    });
+
+    return grouped;
   }
 
   onTabSwitch(event: MatTabChangeEvent): void {
