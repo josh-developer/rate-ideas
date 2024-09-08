@@ -26,7 +26,6 @@ export class IdeasService {
     const json = localStorage.getItem('user');
     const user = JSON.parse(json!);
     const header = new HttpHeaders({
-      // 'Content-Type': 'multipart/form-data',
       Authorization: 'Bearer ' + user.token,
     });
     const data = body as Idea;
@@ -39,6 +38,18 @@ export class IdeasService {
 
     return this.httpClient$.post(environment.api + 'ideas/create', formData, { headers: header });
   }
+
+  editIdeas(body: any) {
+    const data = body as Idea;
+
+    const formData = Object.entries(data).reduce((fd, [key, val]) => {
+      fd.append(key, val);
+      return fd;
+    }, new FormData());
+
+    return this.httpClient$.put(environment.api + 'ideas/update', formData);
+  }
+
   getIdeas(): Observable<IResponse<IIdea[]>> {
     return this.httpClient$.get<IResponse<IIdea[]>>(environment.api + 'ideas/get');
   }

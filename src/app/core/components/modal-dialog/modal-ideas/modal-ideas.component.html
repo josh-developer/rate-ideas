@@ -48,12 +48,12 @@
       Cancel
     </button>
     <button
-      (click)="addIdeas()"
+      (click)="onSubmit()"
       [disabled]="formGroupIdeas.invalid"
       [class.opacity-60]="formGroupIdeas.invalid"
       class="py-3 px-4 bg-green-500 w-[372px] border rounded-md hover:bg-green-600 text-white"
     >
-      Add
+     {{ idea ? "Edit" : "Add" }}
     </button>
   </div>
 </div>
