@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnChanges, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, inject, Input, OnChanges, OnInit, Output, EventEmitter, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,6 +9,7 @@ import { IVote } from '@core/models/IVote';
 import { IdeasService } from '@core/services/ideas.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalIdeasComponent } from '@core/components/modal-dialog/modal-ideas/modal-ideas.component';
+import { SnackBarService } from '@core/services/snackbar.service';
 
 @Component({
   selector: 'app-idea',
@@ -21,10 +22,13 @@ export class IdeaComponent implements OnChanges, OnInit {
   authService = inject(AuthService);
   ideasService = inject(IdeasService);
   dialog = inject(MatDialog);
+  snackbarService = inject(SnackBarService)
 
   @Input() idea?: IIdea;
   @Input() index!: number;
-  @Output() emitter = new EventEmitter();
+  @Input() isMyIdeas: boolean = false;
+  @Output() deleteEmitter = new EventEmitter();
+  @Output() saveEmitter = new EventEmitter();
 
   isOpened = false;
   currentUserId: number | undefined;
@@ -48,7 +52,7 @@ export class IdeaComponent implements OnChanges, OnInit {
   }
 
   vote(isUpvote: boolean): void {
-    this.ideasService.vote({ isUpvote, ideaId: this.idea!.id }).subscribe((response) => {
+    this.ideasService.voteIdea({ isUpvote, ideaId: this.idea!.id }).subscribe((response) => {
       if (response.statusCode === 200) {
         const newVote = response.data;
         const existingVoteIndex = this.idea?.votes?.findIndex((vote) => vote.user?.id === this.currentUserId);
@@ -67,7 +71,7 @@ export class IdeaComponent implements OnChanges, OnInit {
     const confirmed = window.confirm('Haqiqatan ham ushbu g‘oyani o‘chirmoqchimisiz?');
 
     if (confirmed && this.idea?.id !== undefined) {
-      this.emitter.next(this.idea.id);
+      this.deleteEmitter.next(this.idea.id);
     }
   }
 
@@ -87,9 +91,12 @@ export class IdeaComponent implements OnChanges, OnInit {
   }
 
   saveIdea(): void {
-    this.ideasService.saveIdea({ ideaId: this.idea!.id, isSaved: !this.idea!.isSaved }).subscribe((res) => {
-      this.idea!.isSaved = true;
-      console.log(res);
-    });
+    this.ideasService.saveIdea(this.idea!.id).subscribe(res => {
+      if(res.statusCode === 200)
+      {
+        this.idea!.isSaved = !this.idea!.isSaved;
+        this.saveEmitter.next(undefined);
+      }
+    })
   }
 }

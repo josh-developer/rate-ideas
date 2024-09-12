@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { SignUpFormValue } from '@core/models/iSignup';
 import { BehaviorSubject, Observable, tap } from 'rxjs';

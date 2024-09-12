@@ -60,4 +60,8 @@ export default class SavedIdeasComponent {
   onTabSwitch($event: MatTabChangeEvent) {
     this.ideas = this.categories[$event.index].ideas;
   }
+
+  handleSaveIdea() {
+    this.ideas = this.ideas?.filter(idea => idea.isSaved);
+  }
 }
