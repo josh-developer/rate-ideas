@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { map, Observable } from 'rxjs';
+import { filter, map, Observable } from 'rxjs';
 import { IIdea } from '@core/models/IIdea';
 import { IResponse } from '@core/models/IResponse';
 import { IVote } from '@core/models/IVote';
@@ -55,13 +55,22 @@ export class IdeasService {
     return this.httpClient$.get<IResponse<IIdea[]>>(environment.api + 'ideas/get');
   }
 
-  getSavedIdeas(): Observable<any> {
+  getSavedIdeas(): Observable<IIdea[]> {
     return this.httpClient$
-      .get<IResponse<{ idea: IIdea[] }[]>>(environment.api + 'saved-ideas/get-all')
-      .pipe(map((res) => res.data.map((idea) => ({ ...idea.idea }))));
+      .get<IResponse<IIdea[]>>(environment.api + 'ideas/get-all-full')
+      .pipe(
+        map(res => {
+          if (res.statusCode === 200) {
+            return res.data.filter((idea: IIdea) => idea.isSaved);
+          } else {
+            alert(`Xatolik: ${res.message}`);
+            throw new Error(res.message);
+          }
+        })
+      );
   }
 
-  vote(data: { isUpvote: boolean; ideaId: number }): Observable<IResponse<IVote>> {
+  voteIdea(data: { isUpvote: boolean; ideaId: number }): Observable<IResponse<IVote>> {
     return this.httpClient$.post<IResponse<IVote>>(
       environment.api + 'idea-votes/toggle-idea-vote',
       JSON.stringify(data),
@@ -71,8 +80,8 @@ export class IdeasService {
     );
   }
 
-  saveIdea(data: { ideaId: number; isSaved: boolean }): Observable<IResponse<IVote>> {
-    return this.httpClient$.post<IResponse<IVote>>(environment.api + 'saved-ideas/create', JSON.stringify(data), {
+  saveIdea(ideaId: number): Observable<IResponse<number>> {
+    return this.httpClient$.post<IResponse<number>>(environment.api + 'saved-ideas/toggle-saved-idea', JSON.stringify({ ideaId }), {
       headers: this.headers,
     });
   }

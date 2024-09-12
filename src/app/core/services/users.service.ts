@@ -4,7 +4,7 @@ import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { IResponse } from '@core/models/IResponse';
 import { IUser } from '@core/models/IUser';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
 @Injectable({ providedIn: 'root' })
 export class UsersService {

@@ -15,7 +15,7 @@
   <h3 class="!text-[22px]">Saved ideas</h3>
   <div class="flex flex-col w-full">
     @for (idea of ideas; track idea) {
-      <app-idea [idea]="idea" class="my-1" />
+      <app-idea [idea]="idea" (saveEmitter)="handleSaveIdea()" class="my-1" />
     }
   </div>
 </div>
